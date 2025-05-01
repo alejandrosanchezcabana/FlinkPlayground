@@ -70,32 +70,42 @@ public class S3SourceReader implements SourceReader<String, S3SourceSplit> {
     System.out.println("Polling next object from S3");
     if (objectIterator.hasNext()) {
       S3Object s3Object = objectIterator.next();
-      GetObjectRequest getRequest = GetObjectRequest.builder()
-          .bucket(bucketName)
-          .key(s3Object.key())
-          .build();
-      try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-          s3Client.getObject(getRequest), StandardCharsets.UTF_8))) {
-        System.out.println("Reading object: " + s3Object.key());
-        StringBuilder jsonContent = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-          jsonContent.append(line);
-        }
-        // Parse JSON and emit each object as a string
-        JsonNode rootNode = objectMapper.readTree(jsonContent.toString());
-        if (rootNode.isArray()) {
-          for (JsonNode node : rootNode) {
-            readerOutput.collect(node.toString());
-          }
-        } else {
-          readerOutput.collect(rootNode.toString());
-        }
+      if (s3Object.key().endsWith(".json")) {
+        processFile(readerOutput, s3Object);
+      } else {
+        System.out.printf("Polling next object from S3, skipping %s%n", s3Object.key());
+        objectIterator.next();
       }
-      return InputStatus.MORE_AVAILABLE;
-    } else {
-      return InputStatus.END_OF_INPUT;
     }
+    return InputStatus.END_OF_INPUT;
+  }
+
+  private InputStatus processFile(ReaderOutput readerOutput, S3Object s3Object) {
+    GetObjectRequest getRequest = GetObjectRequest.builder()
+        .bucket(bucketName)
+        .key(s3Object.key())
+        .build();
+    try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+        s3Client.getObject(getRequest), StandardCharsets.UTF_8))) {
+      System.out.println("Reading object: " + s3Object.key());
+      StringBuilder jsonContent = new StringBuilder();
+      String line;
+      while ((line = reader.readLine()) != null) {
+        jsonContent.append(line);
+      }
+      // Parse JSON and emit each object as a string
+      JsonNode rootNode = objectMapper.readTree(jsonContent.toString());
+      if (rootNode.isArray()) {
+        for (JsonNode node : rootNode) {
+          readerOutput.collect(node.toString());
+        }
+      } else {
+        readerOutput.collect(rootNode.toString());
+      }
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    return InputStatus.MORE_AVAILABLE;
   }
 
   @Override
