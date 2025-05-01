@@ -7,18 +7,21 @@ import org.apache.flink.api.connector.source.SourceReaderContext;
 import org.apache.flink.api.connector.source.SplitEnumerator;
 import org.apache.flink.api.connector.source.SplitEnumeratorContext;
 import org.apache.flink.core.io.SimpleVersionedSerializer;
+import software.amazon.awssdk.regions.Region;
 
 public class S3Source implements Source<String, S3SourceSplit, Void> {
   private final String bucketName;
+  private final Region bucketRegion;
   private final String prefix;
   private final String AWSAccessKey;
   private final String AWSSecretKey;
 
-  public S3Source(String bucketName, String prefix, String AWSAccessKey, String AWSSecretKey) {
+  public S3Source(String bucketName, String bucketRegion, String prefix, String AWSAccessKey, String AWSSecretKey) {
     this.bucketName = bucketName;
     this.prefix = prefix;
     this.AWSAccessKey = AWSAccessKey;
     this.AWSSecretKey = AWSSecretKey;
+    this.bucketRegion = Region.of(bucketRegion);
     System.out.println("Initializing S3Source with bucket: " + bucketName + " and prefix: " + prefix);
   }
 
@@ -50,7 +53,7 @@ public class S3Source implements Source<String, S3SourceSplit, Void> {
   @Override
   public SourceReader<String, S3SourceSplit> createReader(SourceReaderContext sourceReaderContext) throws Exception {
     System.out.println("Creating S3SourceReader with bucket: " + bucketName + " and prefix: " + prefix);
-    return new S3SourceReader(bucketName, prefix, AWSAccessKey, AWSSecretKey);
+    return new S3SourceReader(bucketName, bucketRegion, prefix, AWSAccessKey, AWSSecretKey);
   }
 }
 

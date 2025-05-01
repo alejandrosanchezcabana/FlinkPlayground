@@ -32,6 +32,7 @@ public class FlinkPlayground {
     //load a properties file from class path, inside static method
     prop.load(new FileInputStream(appConfigPath));
     String bucketName = prop.getProperty("s3.bucket.name");
+    String bucketRegion = prop.getProperty("s3.bucket.region", "eu-west-1");
     String filePath = prop.getProperty("s3.file.path");
     String s3AccessKey = prop.getProperty("aws.access.key");
     String s3SecretKey = prop.getProperty("aws.secret.key");
@@ -41,11 +42,7 @@ public class FlinkPlayground {
 
     System.out.println("Adding S3Source");
     // Read from S3 using S3Source with WatermarkStrategy
-    DataStream<String> s3DataStream = env.fromSource(
-        new S3Source(bucketName, filePath, s3AccessKey, s3SecretKey),
-        WatermarkStrategy.forMonotonousTimestamps(),
-        "S3 Source"
-    );
+    DataStream<String> s3DataStream = env.fromSource(new S3Source(bucketName, bucketRegion, filePath, s3AccessKey, s3SecretKey), WatermarkStrategy.forMonotonousTimestamps(), "S3 Source");
 
     // Process the data (if needed)
     SingleOutputStreamOperator<String> processedStream = s3DataStream.map((MapFunction<String, String>) value -> {

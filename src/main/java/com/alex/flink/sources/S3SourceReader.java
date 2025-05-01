@@ -8,7 +8,6 @@ import org.apache.flink.core.io.InputStatus;
 import software.amazon.awssdk.auth.credentials.AnonymousCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentials;
-import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -18,6 +17,7 @@ import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
 import software.amazon.awssdk.services.s3.model.S3Object;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -32,7 +32,7 @@ public class S3SourceReader implements SourceReader<String, S3SourceSplit> {
   private Iterator<S3Object> objectIterator;
   private final ObjectMapper objectMapper = new ObjectMapper(); // JSON parser
 
-  public S3SourceReader(String bucketName, String prefix, String AWSAccessKey, String AWSSecretKey) {
+  public S3SourceReader(String bucketName, Region bucketRegion, String prefix, String AWSAccessKey, String AWSSecretKey) {
     System.out.println("Initializing S3SourceReader");
     this.bucketName = bucketName;
     this.prefix = prefix;
@@ -44,9 +44,8 @@ public class S3SourceReader implements SourceReader<String, S3SourceSplit> {
       credentials = AnonymousCredentialsProvider.create().resolveCredentials();
     }
 
-
     this.s3Client = S3Client.builder()
-        .credentialsProvider(StaticCredentialsProvider.create(credentials)).region(Region.US_WEST_2).endpointOverride(URI.create("https://s3.us-west-2.amazonaws.com"))
+        .credentialsProvider(StaticCredentialsProvider.create(credentials)).region(bucketRegion).endpointOverride(URI.create(String.format("https://s3.%S.amazonaws.com", bucketRegion.id())))
         .build();
     initializeObjectIterator();
   }
@@ -55,7 +54,6 @@ public class S3SourceReader implements SourceReader<String, S3SourceSplit> {
     ListObjectsV2Request listRequest = ListObjectsV2Request.builder()
         .bucket(bucketName)
         .prefix(prefix)
-        .maxKeys(1)
         .build();
     ListObjectsV2Response listResponse = s3Client.listObjectsV2(listRequest);
     List<S3Object> objects = listResponse.contents();
