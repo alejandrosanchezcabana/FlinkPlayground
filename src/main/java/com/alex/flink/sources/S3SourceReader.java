@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.flink.api.connector.source.ReaderOutput;
 import org.apache.flink.api.connector.source.SourceReader;
 import org.apache.flink.core.io.InputStatus;
+import software.amazon.awssdk.auth.credentials.AnonymousCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentials;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
@@ -27,8 +28,6 @@ import java.util.concurrent.CompletableFuture;
 public class S3SourceReader implements SourceReader<String, S3SourceSplit> {
   private final String bucketName;
   private final String prefix;
-  private final String AWSAccessKey;
-  private final String AWSSecretKey;
   private final S3Client s3Client;
   private Iterator<S3Object> objectIterator;
   private final ObjectMapper objectMapper = new ObjectMapper(); // JSON parser
@@ -37,12 +36,12 @@ public class S3SourceReader implements SourceReader<String, S3SourceSplit> {
     System.out.println("Initializing S3SourceReader");
     this.bucketName = bucketName;
     this.prefix = prefix;
-    this.AWSAccessKey = AWSAccessKey;
-    this.AWSSecretKey = AWSSecretKey;
 
-    AwsCredentials credentials = DefaultCredentialsProvider.create().resolveCredentials();
+    AwsCredentials credentials;
     if (AWSAccessKey != null && AWSSecretKey != null) {
       credentials = AwsBasicCredentials.create(AWSAccessKey, AWSSecretKey);
+    } else {
+      credentials = AnonymousCredentialsProvider.create().resolveCredentials();
     }
 
 
