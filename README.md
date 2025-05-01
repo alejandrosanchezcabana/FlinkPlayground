@@ -1,38 +1,39 @@
-# Flink S3 to Disk
+# Flink Playgorund
 
-This project is an Apache Flink application that reads files from an AWS S3 bucket and writes the contents to the local disk. It serves as a simple example of how to integrate Flink with AWS S3 for data processing.
-
-## Features
-
-- Reads files from AWS S3 using a custom Flink source.
-- Supports JSON file parsing.
-- Implements a `WatermarkStrategy` for event-time processing.
-- Writes processed data to the local disk.
+This project is an Apache Flink application. It serves as a simple example of how to integrate Flink for data processing.
 
 ## Project Structure
 
 ```
-flink-s3-to-disk
-├── src
-│   ├── main
-│   │   ├── java
-│   │   │   └── com
-│   │   │       └── example
-│   │   │           ├── FlinkS3ToDiskJob.java
-│   │   │           ├── sources
-│   │   │           │   └── S3Source.java
-│   │   │           └── sinks
-│   │   │               └── DiskSink.java
-│   │   └── resources
-│   │       └── application.properties
-│   └── test
-│       ├── java
-│       │   └── com
-│       │       └── example
-│       │           └── FlinkS3ToDiskJobTest.java
-│       └── resources
+Flink Playground
+├── LICENSE
+├── README.md
 ├── pom.xml
-└── README.md
+└── src
+    ├── main
+    │   ├── java
+    │   │   └── com
+    │   │       └── alex
+    │   │           └── flink
+    │   │               ├── FlinkPlayground.java
+    │   │               ├── sinks
+    │   │               │   ├── DiskSink.java
+    │   │               │   └── DiskSinkWriter.java
+    │   │               └── sources
+    │   │                   ├── S3SimpleVersionedSerializer.java
+    │   │                   ├── S3Source.java
+    │   │                   ├── S3SourceReader.java
+    │   │                   ├── S3SourceSplit.java
+    │   │                   └── S3SplitEnumerator.java
+    │   └── resources
+    │       └── application.properties
+    └── test
+        ├── java
+        │   └── com
+        │       └── alex
+        │           └── flink
+        │               └── FlinkPlaygroundTest.java
+        └── resources
 ```
 
 ## Setup Instructions
@@ -60,7 +61,7 @@ flink-s3-to-disk
 
 ## Usage
 
-The application reads files from the specified S3 bucket and writes the contents to the local disk. You can customize the source and sink configurations in the `application.properties` file.
+You can customize the source and sink configurations in the `application.properties` file.
 
 ## Dependencies
 
