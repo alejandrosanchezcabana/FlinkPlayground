@@ -23,6 +23,6 @@
 hs_err_pid*
 replay_pid*
 .idea/*
-src/main/resources/application.properties
+src/main/resources/application.md
 target/*
-target/*.properties
+target/*.md
