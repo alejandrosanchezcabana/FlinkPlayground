@@ -17,22 +17,35 @@ Flink Playground
     │   │           └── flink
     │   │               ├── FlinkPlayground.java
     │   │               ├── sinks
-    │   │               │   ├── DiskSink.java
-    │   │               │   └── DiskSinkWriter.java
-    │   │               └── sources
-    │   │                   ├── S3SimpleVersionedSerializer.java
-    │   │                   ├── S3Source.java
-    │   │                   ├── S3SourceReader.java
-    │   │                   ├── S3SourceSplit.java
-    │   │                   └── S3SplitEnumerator.java
+    │   │               │   └── disk
+    │   │               │       ├── DiskSink.java
+    │   │               │       └── DiskSinkWriter.java
+    │   │               ├── sources
+    │   │               │   ├── disk
+    │   │               │   │   ├── DiskSimpleVersionedSerializer.java
+    │   │               │   │   ├── DiskSource.java
+    │   │               │   │   ├── DiskSourceReader.java
+    │   │               │   │   ├── DiskSourceSplit.java
+    │   │               │   │   └── DiskSplitEnumerator.java
+    │   │               │   └── s3
+    │   │               │       ├── S3SimpleVersionedSerializer.java
+    │   │               │       ├── S3Source.java
+    │   │               │       ├── S3SourceReader.java
+    │   │               │       ├── S3SourceSplit.java
+    │   │               │       └── S3SplitEnumerator.java
+    │   │               └── utils
+    │   │                   └── MarkdownProperties.java
     │   └── resources
-    │       └── application.properties
+    │       ├── application.md
+    │       └── default_application.md
     └── test
         ├── java
         │   └── com
         │       └── alex
         │           └── flink
-        │               └── FlinkPlaygroundTest.java
+        │               ├── FlinkPlaygroundTest.java
+        │               └── utils
+        │                   └── MarkdownPropertiesTest.java
         └── resources
 ```
 

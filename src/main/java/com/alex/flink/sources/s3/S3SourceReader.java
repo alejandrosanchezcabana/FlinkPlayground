@@ -21,11 +21,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class S3SourceReader implements SourceReader<String, S3SourceSplit> {
+public class S3SourceReader implements SourceReader<List<Object>, S3SourceSplit> {
   private final String bucketName;
   private final String prefix;
   private final S3Client s3Client;
@@ -66,12 +67,13 @@ public class S3SourceReader implements SourceReader<String, S3SourceSplit> {
   }
 
   @Override
-  public InputStatus pollNext(ReaderOutput readerOutput) throws Exception {
+  public InputStatus pollNext(ReaderOutput<List<Object>> readerOutput) throws Exception {
     System.out.println("Polling next object from S3");
     if (objectIterator.hasNext()) {
       S3Object s3Object = objectIterator.next();
       if (s3Object.key().endsWith(".json")) {
         processFile(readerOutput, s3Object);
+        return InputStatus.MORE_AVAILABLE;
       } else {
         System.out.printf("Polling next object from S3, skipping %s%n", s3Object.key());
         objectIterator.next();
@@ -80,7 +82,7 @@ public class S3SourceReader implements SourceReader<String, S3SourceSplit> {
     return InputStatus.END_OF_INPUT;
   }
 
-  private InputStatus processFile(ReaderOutput readerOutput, S3Object s3Object) {
+  private void processFile(ReaderOutput<List<Object>> readerOutput, S3Object s3Object) {
     GetObjectRequest getRequest = GetObjectRequest.builder()
         .bucket(bucketName)
         .key(s3Object.key())
@@ -88,24 +90,15 @@ public class S3SourceReader implements SourceReader<String, S3SourceSplit> {
     try (BufferedReader reader = new BufferedReader(new InputStreamReader(
         s3Client.getObject(getRequest), StandardCharsets.UTF_8))) {
       System.out.println("Reading object: " + s3Object.key());
-      StringBuilder jsonContent = new StringBuilder();
+      List<Object> listOfLines = new ArrayList<>();
       String line;
       while ((line = reader.readLine()) != null) {
-        jsonContent.append(line);
+        listOfLines.add(objectMapper.readTree(line).toString());
       }
-      // Parse JSON and emit each object as a string
-      JsonNode rootNode = objectMapper.readTree(jsonContent.toString());
-      if (rootNode.isArray()) {
-        for (JsonNode node : rootNode) {
-          readerOutput.collect(node.toString());
-        }
-      } else {
-        readerOutput.collect(rootNode.toString());
-      }
+      readerOutput.collect(listOfLines);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
-    return InputStatus.MORE_AVAILABLE;
   }
 
   @Override

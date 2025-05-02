@@ -2,15 +2,5 @@ package com.alex.flink.sources.s3;
 
 import org.apache.flink.api.connector.source.SourceSplit;
 
-public class S3SourceSplit implements SourceSplit {
-  private final String splitId;
-
-  public S3SourceSplit(String splitId) {
-    this.splitId = splitId;
-  }
-
-  @Override
-  public String splitId() {
-    return splitId;
-  }
+public record S3SourceSplit(String splitId) implements SourceSplit {
 }

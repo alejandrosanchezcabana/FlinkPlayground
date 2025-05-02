@@ -5,8 +5,9 @@ import org.apache.flink.api.connector.sink2.SinkWriter;
 import org.apache.flink.api.connector.sink2.WriterInitContext;
 
 import java.io.IOException;
+import java.util.List;
 
-public class DiskSink implements Sink<String> {
+public class DiskSink implements Sink<List<Object>> {
 
     private final String outputPath;
 
@@ -15,12 +16,12 @@ public class DiskSink implements Sink<String> {
     }
 
     @Override
-    public SinkWriter<String> createWriter(InitContext initContext) throws IOException {
+    public SinkWriter<List<Object>> createWriter(InitContext initContext) throws IOException {
         return new DiskSinkWriter(outputPath);
     }
 
     @Override
-    public SinkWriter<String> createWriter(WriterInitContext context) throws IOException {
+    public SinkWriter<List<Object>> createWriter(WriterInitContext context) throws IOException {
         return new DiskSinkWriter(outputPath);
     }
 }

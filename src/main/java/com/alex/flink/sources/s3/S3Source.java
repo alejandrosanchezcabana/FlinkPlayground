@@ -9,7 +9,9 @@ import org.apache.flink.api.connector.source.SplitEnumeratorContext;
 import org.apache.flink.core.io.SimpleVersionedSerializer;
 import software.amazon.awssdk.regions.Region;
 
-public class S3Source implements Source<String, S3SourceSplit, Void> {
+import java.util.List;
+
+public class S3Source implements Source<List<Object>, S3SourceSplit, Void> {
   private final String bucketName;
   private final Region bucketRegion;
   private final String prefix;
@@ -51,7 +53,7 @@ public class S3Source implements Source<String, S3SourceSplit, Void> {
   }
 
   @Override
-  public SourceReader<String, S3SourceSplit> createReader(SourceReaderContext sourceReaderContext) throws Exception {
+  public SourceReader<List<Object>, S3SourceSplit> createReader(SourceReaderContext sourceReaderContext) throws Exception {
     System.out.println("Creating S3SourceReader with bucket: " + bucketName + " and prefix: " + prefix);
     return new S3SourceReader(bucketName, bucketRegion, prefix, AWSAccessKey, AWSSecretKey);
   }

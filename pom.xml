@@ -7,6 +7,7 @@
         <java.version>17</java.version>
         <flink.version>1.20.1</flink.version>
         <aws.sdk.version>2.31.3</aws.sdk.version>
+        <jackson.version>2.15.2</jackson.version>
     </properties>
     <dependencies>
         <dependency>
@@ -52,7 +53,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.15.2</version>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
