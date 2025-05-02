@@ -16,6 +16,8 @@ Flink Playground
     │   │       └── alex
     │   │           └── flink
     │   │               ├── FlinkPlayground.java
+    │   │               ├── mapper
+    │   │               │   └── FieldRemoverMapper.java
     │   │               ├── sinks
     │   │               │   └── disk
     │   │               │       ├── DiskSink.java
@@ -34,6 +36,7 @@ Flink Playground
     │   │               │       ├── S3SourceSplit.java
     │   │               │       └── S3SplitEnumerator.java
     │   │               └── utils
+    │   │                   ├── JSONFileParser.java
     │   │                   └── MarkdownProperties.java
     │   └── resources
     │       ├── application.md
