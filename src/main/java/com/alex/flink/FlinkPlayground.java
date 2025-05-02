@@ -1,5 +1,6 @@
 package com.alex.flink;
 
+import com.alex.flink.mapper.FieldRemoverMapper;
 import com.alex.flink.sinks.disk.DiskSink;
 import com.alex.flink.sources.disk.DiskSource;
 import com.alex.flink.sources.s3.S3Source;
@@ -35,7 +36,7 @@ public class FlinkPlayground {
 
     addSource(env, DiskSource.class);
 
-    SingleOutputStreamOperator<List<Object>> processedStream = dataStream;
+    SingleOutputStreamOperator<List<Object>> processedStream = dataStream.map(new FieldRemoverMapper("Author sex")); //TODO Parametrize
 
     String outputPath = properties.getProperty("local.output.dir");
     processedStream.sinkTo(new DiskSink(outputPath));
