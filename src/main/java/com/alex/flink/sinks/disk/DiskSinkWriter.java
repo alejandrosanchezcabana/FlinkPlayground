@@ -1,4 +1,4 @@
-package com.alex.flink.sinks;
+package com.alex.flink.sinks.disk;
 
 import org.apache.flink.api.connector.sink2.SinkWriter;
 
