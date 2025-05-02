@@ -1,5 +1,6 @@
 package com.alex.flink.sources.disk;
 
+import com.alex.flink.utils.JSONFileParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.flink.api.connector.source.ReaderOutput;
@@ -65,12 +66,7 @@ public class DiskSourceReader implements SourceReader<List<Object>, DiskSourceSp
   private void processFile(ReaderOutput<List<Object>> readerOutput, File file) {
     try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
       System.out.println("Reading file: " + file.getName());
-      List<Object> listOfLines = new ArrayList<>();
-      String line;
-      while ((line = reader.readLine()) != null) {
-        listOfLines.add(objectMapper.readTree(line).toString());
-      }
-      readerOutput.collect(listOfLines);
+      JSONFileParser.processJsonFile(readerOutput, reader, objectMapper);
     } catch (IOException e) {
       throw new RuntimeException("Failed to process file: " + file.getName(), e);
     }

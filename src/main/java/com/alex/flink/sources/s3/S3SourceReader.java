@@ -1,5 +1,6 @@
 package com.alex.flink.sources.s3;
 
+import com.alex.flink.utils.JSONFileParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.flink.api.connector.source.ReaderOutput;
@@ -90,12 +91,8 @@ public class S3SourceReader implements SourceReader<List<Object>, S3SourceSplit>
     try (BufferedReader reader = new BufferedReader(new InputStreamReader(
         s3Client.getObject(getRequest), StandardCharsets.UTF_8))) {
       System.out.println("Reading object: " + s3Object.key());
-      List<Object> listOfLines = new ArrayList<>();
-      String line;
-      while ((line = reader.readLine()) != null) {
-        listOfLines.add(objectMapper.readTree(line).toString());
-      }
-      readerOutput.collect(listOfLines);
+      JSONFileParser.processJsonFile(readerOutput, reader, objectMapper);
+
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
