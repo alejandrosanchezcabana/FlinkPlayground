@@ -1,7 +1,7 @@
 package com.alex.flink;
 
 import com.alex.flink.sinks.DiskSink;
-import com.alex.flink.sources.S3Source;
+import com.alex.flink.sources.s3.S3Source;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.core.execution.CheckpointingMode;

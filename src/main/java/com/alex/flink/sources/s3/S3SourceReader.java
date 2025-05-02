@@ -1,4 +1,4 @@
-package com.alex.flink.sources;
+package com.alex.flink.sources.s3;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

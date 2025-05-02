@@ -1,4 +1,4 @@
-package com.alex.flink.sources;
+package com.alex.flink.sources.s3;
 
 import org.apache.flink.api.connector.source.Boundedness;
 import org.apache.flink.api.connector.source.Source;
