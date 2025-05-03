@@ -6,6 +6,7 @@ import com.alex.flink.sources.disk.DiskSource;
 import com.alex.flink.sources.s3.S3Source;
 import com.alex.flink.utils.MarkdownProperties;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
+import org.apache.flink.api.connector.sink2.Sink;
 import org.apache.flink.api.connector.source.Source;
 import org.apache.flink.api.connector.source.SourceSplit;
 import org.apache.flink.core.execution.CheckpointingMode;
@@ -36,11 +37,11 @@ public class FlinkPlayground {
 
     addSource(env, DiskSource.class);
 
-    SingleOutputStreamOperator<List<Object>> processedStream = dataStream.map(new FieldRemoverMapper("Author sex")); //TODO Parametrize
+    String fieldToRemove = properties.getProperty("field.remover.fieldToRemove");
 
-    String outputPath = properties.getProperty("local.output.dir");
-    processedStream.sinkTo(new DiskSink(outputPath));
+    SingleOutputStreamOperator<List<Object>> stream = dataStream.map(new FieldRemoverMapper(fieldToRemove));
 
+    addSink(stream, DiskSink.class);
     // Execute the job
     env.execute("Flink Job");
   }
@@ -57,6 +58,13 @@ public class FlinkPlayground {
       String inputPath = properties.getProperty("local.input.dir");
       String inputPattern = properties.getProperty("local.input.pattern");
       dataStream = env.fromSource(new DiskSource(inputPath, inputPattern), WatermarkStrategy.forMonotonousTimestamps(), "Disk Source");
+    }
+  }
+
+  private static void addSink(SingleOutputStreamOperator<List<Object>> stream, Class<? extends Sink<List<Object>>> sink) {
+    if (sink.equals(DiskSink.class)) {
+      String outputPath = properties.getProperty("local.output.dir");
+      stream.sinkTo(new DiskSink(outputPath));
     }
   }
 

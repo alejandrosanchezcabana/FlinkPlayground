@@ -32,6 +32,12 @@ local.input.dir=
 
 local.input.pattern=
 
+# PROCESSORS
+
+## Field Remover
+
+field.remover.fieldToRemove=
+
 # SINKS
 
 ## Disk Sink
