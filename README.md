@@ -57,11 +57,11 @@ Flink Playground
 1. **Clone the repository:**
    ```
    git clone <repository-url>
-   cd flink-s3-to-disk
+   cd FlinkPlayground
    ```
 
 2. **Configure AWS Credentials:**
-   Update the `src/main/resources/application.properties` file with your AWS credentials and S3 bucket information.
+   Update the `src/main/resources/application.md` file to set up all the information.
 
 3. **Build the project:**
    Use Maven to build the project:
@@ -72,12 +72,12 @@ Flink Playground
 4. **Run the Flink job:**
    Submit the job to your Flink cluster using the following command:
    ```
-   flink run target/flink-s3-to-disk-1.0-SNAPSHOT.jar
+   flink run target/FlinkPlayground-1.0-SNAPSHOT.jar
    ```
 
 ## Usage
 
-You can customize the source and sink configurations in the `application.properties` file.
+You can customize the source and sink configurations in the `application.md` file.
 
 ## Dependencies
 
