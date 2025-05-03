@@ -1,9 +1,5 @@
 package com.alex.flink.sources.disk;
 
-import com.alex.flink.sources.s3.S3SimpleVersionedSerializer;
-import com.alex.flink.sources.s3.S3SourceReader;
-import com.alex.flink.sources.s3.S3SourceSplit;
-import com.alex.flink.sources.s3.S3SplitEnumerator;
 import org.apache.flink.api.connector.source.Boundedness;
 import org.apache.flink.api.connector.source.Source;
 import org.apache.flink.api.connector.source.SourceReader;
@@ -11,10 +7,8 @@ import org.apache.flink.api.connector.source.SourceReaderContext;
 import org.apache.flink.api.connector.source.SplitEnumerator;
 import org.apache.flink.api.connector.source.SplitEnumeratorContext;
 import org.apache.flink.core.io.SimpleVersionedSerializer;
-import software.amazon.awssdk.regions.Region;
 
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class DiskSource implements Source<List<Object>, DiskSourceSplit, Void> {
   private final String inputPath;

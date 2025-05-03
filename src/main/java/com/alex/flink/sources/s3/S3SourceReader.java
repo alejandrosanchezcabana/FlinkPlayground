@@ -1,7 +1,6 @@
 package com.alex.flink.sources.s3;
 
 import com.alex.flink.utils.JSONFileParser;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.flink.api.connector.source.ReaderOutput;
 import org.apache.flink.api.connector.source.SourceReader;
@@ -22,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -31,8 +29,8 @@ public class S3SourceReader implements SourceReader<List<Object>, S3SourceSplit>
   private final String bucketName;
   private final String prefix;
   private final S3Client s3Client;
-  private Iterator<S3Object> objectIterator;
   private final ObjectMapper objectMapper = new ObjectMapper(); // JSON parser
+  private Iterator<S3Object> objectIterator;
 
   public S3SourceReader(String bucketName, Region bucketRegion, String prefix, String AWSAccessKey, String AWSSecretKey) {
     System.out.println("Initializing S3SourceReader");

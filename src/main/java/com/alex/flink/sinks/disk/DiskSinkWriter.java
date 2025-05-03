@@ -6,10 +6,10 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 
 public class DiskSinkWriter implements SinkWriter<List<Object>> {
   private final String outputPath;
+
   DiskSinkWriter(String outputPath) {
     this.outputPath = outputPath;
   }

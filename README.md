@@ -1,6 +1,7 @@
 # Flink Playgorund
 
-This project is an Apache Flink application. It serves as a simple example of how to integrate Flink for data processing.
+This project is an Apache Flink application. It serves as a simple example of how to integrate Flink for data
+processing.
 
 ## Project Structure
 
@@ -82,6 +83,7 @@ You can customize the source and sink configurations in the `application.md` fil
 ## Dependencies
 
 This project uses the following dependencies:
+
 - Apache Flink
 - AWS SDK for Java
 - Jackson Databind for JSON parsing

@@ -1,6 +1,5 @@
 package com.alex.flink.sources.disk;
 
-import com.alex.flink.sources.s3.S3SourceSplit;
 import org.apache.flink.core.io.SimpleVersionedSerializer;
 
 import java.io.ByteArrayInputStream;
