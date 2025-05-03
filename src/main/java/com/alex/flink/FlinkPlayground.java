@@ -24,11 +24,10 @@ public class FlinkPlayground {
   private static DataStreamSource<List<Object>> dataStream;
 
   public static void main(String[] args) throws Exception {
-    // Set up the execution environment
+
     final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
     env.setParallelism(1);
 
-    // Enable checkpointing
     env.enableCheckpointing(10000, CheckpointingMode.EXACTLY_ONCE);
     env.getCheckpointConfig().setCheckpointTimeout(60000);
     env.getCheckpointConfig().setMaxConcurrentCheckpoints(1);
@@ -42,7 +41,7 @@ public class FlinkPlayground {
     SingleOutputStreamOperator<List<Object>> stream = dataStream.map(new FieldRemoverMapper(fieldToRemove));
 
     addSink(stream, DiskSink.class);
-    // Execute the job
+
     env.execute("Flink Job");
   }
 
@@ -74,13 +73,15 @@ public class FlinkPlayground {
     if (resource != null) {
       appConfigPath = resource.getPath();
     } else {
-      throw new RuntimeException("Resource not found");
+      throw new RuntimeException();
     }
 
     try {
-      properties.load(new FileInputStream(appConfigPath + "application.md"));
+      properties.load(new FileInputStream(appConfigPath + "applicationd.md"));
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      System.out.println("Failed to locate application.md");
+      System.out.println("Please make sure /src/main/resources/application.md exists, if it doesn't you can create by copying the default_application.md file");
+      throw new RuntimeException();
     }
   }
 }
