@@ -9,19 +9,14 @@ import java.util.List;
 
 public class DiskSink implements Sink<List<Object>> {
 
-    private final String outputPath;
+  private final String outputPath;
 
-    public DiskSink(String outputPath) {
-        this.outputPath = outputPath;
-    }
+  public DiskSink(String outputPath) {
+    this.outputPath = outputPath;
+  }
 
-    @Override
-    public SinkWriter<List<Object>> createWriter(InitContext initContext) throws IOException {
-        return new DiskSinkWriter(outputPath);
-    }
-
-    @Override
-    public SinkWriter<List<Object>> createWriter(WriterInitContext context) throws IOException {
-        return new DiskSinkWriter(outputPath);
-    }
+  @Override
+  public SinkWriter<List<Object>> createWriter(WriterInitContext context) throws IOException {
+    return new DiskSinkWriter(outputPath);
+  }
 }
