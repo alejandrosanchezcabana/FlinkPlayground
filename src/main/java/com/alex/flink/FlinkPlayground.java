@@ -6,17 +6,21 @@ import com.alex.flink.sources.disk.DiskSource;
 import com.alex.flink.sources.s3.S3Source;
 import com.alex.flink.utils.MarkdownProperties;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
+import org.apache.flink.api.common.functions.JoinFunction;
 import org.apache.flink.api.connector.sink2.Sink;
 import org.apache.flink.api.connector.source.Source;
 import org.apache.flink.api.connector.source.SourceSplit;
+import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.core.execution.CheckpointingMode;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.api.windowing.assigners.TumblingProcessingTimeWindows;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.time.Duration;
 import java.util.List;
 
 public class FlinkPlayground {
@@ -37,7 +41,10 @@ public class FlinkPlayground {
     addSource(env, DiskSource.class);
 
     String fieldToRemove = properties.getProperty("field.remover.fieldToRemove");
+    DataStreamSource<List<Object>> secondaryStream = env.fromSource(new DiskSource("/Users/alex/data/authors/", "*.json"), WatermarkStrategy.forMonotonousTimestamps(), "Disk Source");
 
+    dataStream.join(secondaryStream).where(KeySelector<>).equalTo("id")
+        .window(TumblingProcessingTimeWindows.of(Duration.ZERO));
     SingleOutputStreamOperator<List<Object>> stream = dataStream.map(new FieldRemoverMapper(fieldToRemove));
 
     addSink(stream, DiskSink.class);

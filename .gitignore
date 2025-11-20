@@ -26,3 +26,4 @@ replay_pid*
 src/main/resources/application.md
 target/*
 target/*.md
+src/.DS_Store
